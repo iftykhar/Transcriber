@@ -4,3 +4,4 @@ models/
 *.log
 .DS_Store
 .live-test-profile/
+.accuracy-profile/
