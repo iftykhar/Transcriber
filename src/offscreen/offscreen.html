@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>BN/EN Live Transcriber — offscreen audio</title>
+  </head>
+  <body>
+    <!-- No UI — this document exists only because MV3 service workers
+         cannot hold a MediaStream/AudioContext. tab-audio-capture.ts
+         runs here, not in the background service worker. -->
+    <script src="offscreen.js"></script>
+  </body>
+</html>

@@ -1,0 +1,103 @@
+/* Injected into the overlay's Shadow DOM, so it never leaks into (or is
+   affected by) the host page. Everything is scoped to :host / .panel. */
+
+:host {
+  all: initial;
+}
+
+.panel {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(17, 19, 24, 0.92);
+  color: #e8eaed;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #bdc1c6;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex: 0 0 auto;
+}
+
+.panel-close {
+  all: unset;
+  cursor: pointer;
+  padding: 0 6px;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 1;
+  color: #9aa0a6;
+}
+
+.panel-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e8eaed;
+}
+
+.panel-status {
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 11px;
+  color: #9aa0a6;
+  flex: 0 0 auto;
+}
+
+.panel-list {
+  margin: 0;
+  padding: 4px 12px 12px;
+  list-style: none;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  scrollbar-width: thin;
+}
+
+.segment {
+  display: flex;
+  gap: 8px;
+  padding: 3px 0;
+  align-items: baseline;
+}
+
+.segment-time {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: #80868b;
+  padding-top: 1px;
+}
+
+.segment-text {
+  flex: 1 1 auto;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* Bengali gets a slightly warmer tint and a font stack that actually has
+   Bengali coverage; the lang attribute is never rendered as a visible badge. */
+.segment[data-lang="bn"] .segment-text {
+  color: #ffe0b2;
+  font-family: "Noto Sans Bengali", "Nirmala UI", "Vrinda", system-ui, sans-serif;
+}
+
+.segment[data-lang="en"] .segment-text {
+  color: #e8eaed;
+}

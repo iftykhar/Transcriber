@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "BN/EN Live Transcriber",
+  "version": "0.1.0",
+  "description": "Local, in-browser Bengali/English live transcription for Google Meet and Zoom (tab audio, no server).",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": ["tabCapture", "storage", "scripting", "offscreen"],
+  "host_permissions": [
+    "https://meet.google.com/*",
+    "https://*.zoom.us/*",
+    "https://huggingface.co/*",
+    "https://*.huggingface.co/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": ["content/meet-inject.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.zoom.us/*"],
+      "js": ["content/zoom-inject.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["content/overlay/overlay.css"],
+      "matches": ["https://meet.google.com/*", "https://*.zoom.us/*"]
+    }
+  ]
+}

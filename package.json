@@ -1,0 +1,23 @@
+{
+  "name": "bn-en-live-transcriber",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local, in-browser BN/EN live meeting transcriber (Chrome MV3 extension).",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "typecheck:worker": "tsc -p tsconfig.worker.json --noEmit",
+    "typecheck:worklet": "tsc -p tsconfig.worklet.json --noEmit",
+    "check": "npm run typecheck && npm run typecheck:worker && npm run typecheck:worklet && npm run build",
+    "test": "node --test tests/pure-logic.test.ts"
+  },
+  "dependencies": {
+    "@xenova/transformers": "^2.17.2"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.270",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2"
+  }
+}

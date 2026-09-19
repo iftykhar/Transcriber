@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>BN/EN Live Transcriber</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main id="app">
+      <h1>BN/EN Live Transcriber</h1>
+      <p id="status">Idle</p>
+      <button id="start" type="button">Start</button>
+      <button id="stop" type="button" disabled>Stop</button>
+      <button id="clear" type="button">Clear transcript</button>
+      <div id="export-controls">
+        <button id="export-txt" type="button">Export .txt</button>
+        <button id="export-srt" type="button">Export .srt</button>
+        <button id="export-json" type="button">Export .json</button>
+      </div>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
