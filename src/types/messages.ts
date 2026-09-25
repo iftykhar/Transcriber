@@ -20,6 +20,7 @@ export interface StartCapture {
   type: "StartCapture";
   tabId: number;
   platform: Platform;
+  language: "auto" | "bn" | "en" | "banglish";
 }
 
 export interface StopCapture {
@@ -36,6 +37,7 @@ export interface OffscreenStartCapture {
   streamId: string;
   tabId: number;
   platform: Platform;
+  language: "auto" | "bn" | "en" | "banglish";
 }
 
 export interface CaptureStarted {
@@ -155,6 +157,11 @@ export interface TabIdentity {
   tabId: number;
 }
 
+export interface ToggleOverlay {
+  type: "ToggleOverlay";
+  tabId?: number;
+}
+
 // --- Union + exhaustiveness helper --------------------------------------
 
 export type Message =
@@ -179,7 +186,8 @@ export type Message =
   | RequestTranscriptState
   | TranscriptState
   | RequestTabIdentity
-  | TabIdentity;
+  | TabIdentity
+  | ToggleOverlay;
 
 /**
  * Call in the `default` branch of an exhaustive switch over Message.

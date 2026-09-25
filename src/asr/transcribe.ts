@@ -2,6 +2,7 @@ import { detectLang } from "./lang-detect";
 import { ensure, type AsrPipeline } from "./model-loader";
 import { makeId } from "../types/ids";
 import type { Platform, TranscriptSegment } from "../types/transcript";
+import { transliterateBanglish } from "./transliterate";
 
 // Turning a block of 16 kHz mono PCM into a TranscriptSegment.
 
@@ -12,6 +13,8 @@ export interface TranscribeContext {
   timestampMs: number;
   /** Chunk the audio arrived in, for traceability. */
   sourceChunkId: string;
+  /** Explicit language target to guide the model, or auto for auto-detect. */
+  language: "auto" | "bn" | "en" | "banglish";
 }
 
 // Whisper's decoder is trained on subtitled video, so on silence/near-silence
@@ -29,6 +32,7 @@ const HALLUCINATIONS = [
   "[applause]",
   "[silence]",
   "[blank_audio]",
+  "[beep]",
   "♪",
   "...",
   "।।",
@@ -63,17 +67,23 @@ export async function transcribeSegment(
   }
 
   const started = Date.now();
-  const output = await pipe(samples, {
-    // Leave language unset so Whisper auto-detects; the decoded *script* is
-    // what we actually trust (see lang-detect.ts).
+  const options: Record<string, unknown> = {
     task: "transcribe",
     return_timestamps: false,
     // Greedy decoding: faster and less prone to hallucinated loops than
     // beam search for short clips.
     num_beams: 1,
-  });
+  };
 
-  const text = (output?.text ?? "").trim();
+  if (ctx.language === "bn" || ctx.language === "banglish") {
+    options.language = "bengali";
+  } else if (ctx.language === "en") {
+    options.language = "english";
+  }
+
+  const output = await pipe(samples, options);
+
+  let text = (output?.text ?? "").trim();
   const durationMs = samples.length > 0 ? (samples.length / 16000) * 1000 : Date.now() - started;
 
   if (looksLikeHallucination(text)) {
@@ -82,12 +92,17 @@ export async function transcribeSegment(
 
   const { lang, confidence } = detectLang(text, null);
 
+  // Apply Banglish transliteration if requested
+  if (ctx.language === "banglish" && lang === "bn") {
+    text = transliterateBanglish(text);
+  }
+
   return {
     segment: {
       id: makeId(),
       timestampMs: ctx.timestampMs,
       text,
-      lang,
+      lang: ctx.language === "banglish" ? "bn" : lang,
       platform: ctx.platform,
       // There is no calibrated acoustic score from the pipeline, so the
       // script/hint agreement is used as an honest proxy rather than
