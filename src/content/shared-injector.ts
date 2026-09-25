@@ -31,7 +31,7 @@ function onMessage(message: Message, _sender: chrome.runtime.MessageSender): voi
 
   switch (message.type) {
     case "CaptureStarted":
-      ensurePanel();
+      ensurePanel().show();
       setOverlayStatus("Listening\u2026");
       break;
 
@@ -40,17 +40,21 @@ function onMessage(message: Message, _sender: chrome.runtime.MessageSender): voi
       break;
 
     case "CaptureError":
-      ensurePanel();
+      ensurePanel().show();
       setOverlayStatus(`Error: ${message.message}`);
       break;
 
     case "TranscriptChunk":
-      ensurePanel();
+      ensurePanel().show();
       ensurePanel().append(message.segment as TranscriptSegment);
       break;
 
     case "ClearTranscript":
       panel?.clear();
+      break;
+
+    case "ToggleOverlay":
+      ensurePanel().toggle();
       break;
 
     // Everything else is addressed to another context.

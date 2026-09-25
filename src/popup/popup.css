@@ -1,21 +1,97 @@
 body {
-  font-family: system-ui, sans-serif;
-  min-width: 260px;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
+  min-width: 280px;
   margin: 0;
-  padding: 12px;
+  padding: 28px;
+  background-color: #fff;
+  color: #222;
 }
 
 h1 {
-  font-size: 14px;
-  margin: 0 0 8px;
+  font-size: 25px;
+  margin: 0 0 20px;
+  color: #111;
+  text-align: center;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: #222;
 }
 
 #status {
-  font-size: 12px;
-  opacity: 0.7;
+  font-size: 17px;
+  color: #333;
+  background: #fff;
+  padding: 12px 16px;
+  /* CSS trick for sketchy, hand-drawn wobbly borders */
+  border: 1px solid #222;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  margin-bottom: 20px;
+  text-align: center;
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+}
+
+select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 17px;
+  background-color: #fff;
+  color: #222;
+  border: 1px solid #222;
+  /* Inverse wobbly border for variety */
+  border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  padding: 12px 16px;
+  margin-bottom: 28px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 }
 
 button {
-  margin: 2px 0;
   width: 100%;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: bold;
+  margin: 8px 0;
+  padding: 12px;
+  background-color: #fff;
+  color: #222;
+  border: 1px solid #222;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.15);
+}
+
+button:hover:not(:disabled) {
+  background-color: #f9f9f9;
+  /* Slight irregular rotation on hover */
+  transform: rotate(-1deg) scale(1.02);
+}
+
+button:active:not(:disabled) {
+  transform: translate(2px, 2px) rotate(1deg);
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.15);
+}
+
+button:disabled {
+  background-color: #fafafa;
+  color: #aaa;
+  border-color: #ddd;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#start {
+  background-color: #222;
+  color: #fff;
+}
+
+#start:hover:not(:disabled) {
+  background-color: #444;
+}
+
+#export-controls {
+  margin-top: 20px;
+  border-top: 1px dashed #aaa;
+  padding-top: 20px;
 }

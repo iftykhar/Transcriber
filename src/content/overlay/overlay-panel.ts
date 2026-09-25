@@ -12,10 +12,12 @@ import type { TranscriptSegment } from "../../types/transcript";
 
 const HOST_ID = "bn-en-live-transcriber-overlay";
 
-export interface OverlayPanel {
+  export interface OverlayPanel {
   append(segment: TranscriptSegment): void;
   clear(): void;
   destroy(): void;
+  show(): void;
+  toggle(): void;
 }
 
 function positionHost(host: HTMLElement): void {
@@ -30,6 +32,38 @@ function positionHost(host: HTMLElement): void {
   s.setProperty("height", "280px", "important");
   s.setProperty("z-index", "2147483647", "important");
   s.setProperty("pointer-events", "auto", "important");
+}
+
+function makeDraggable(host: HTMLElement, header: HTMLElement): void {
+  let isDragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  header.addEventListener("mousedown", (e: MouseEvent) => {
+    isDragging = true;
+    const rect = host.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    header.style.cursor = "grabbing";
+  });
+
+  document.addEventListener("mousemove", (e: MouseEvent) => {
+    if (!isDragging) return;
+    
+    // Switch from right/bottom pinning to left/top pinning for dragging
+    const s = host.style;
+    s.setProperty("bottom", "auto", "important");
+    s.setProperty("right", "auto", "important");
+    s.setProperty("left", `${e.clientX - offsetX}px`, "important");
+    s.setProperty("top", `${e.clientY - offsetY}px`, "important");
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+    header.style.cursor = "grab";
+  });
+  
+  header.style.cursor = "grab";
 }
 
 export function mountOverlayPanel(): OverlayPanel {
@@ -66,6 +100,8 @@ export function mountOverlayPanel(): OverlayPanel {
   });
   header.append(close);
 
+  makeDraggable(host, header);
+
   const status = document.createElement("p");
   status.className = "panel-status";
   status.textContent = "Starting\u2026";
@@ -101,6 +137,16 @@ export function mountOverlayPanel(): OverlayPanel {
     destroy(): void {
       host.remove();
     },
+    show(): void {
+      host.style.removeProperty("display");
+    },
+    toggle(): void {
+      if (host.style.getPropertyValue("display") === "none") {
+        host.style.removeProperty("display");
+      } else {
+        host.style.setProperty("display", "none", "important");
+      }
+    }
   };
 }
 

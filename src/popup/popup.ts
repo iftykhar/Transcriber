@@ -11,6 +11,7 @@ const clearBtn = document.querySelector<HTMLButtonElement>("#clear");
 const exportTxt = document.querySelector<HTMLButtonElement>("#export-txt");
 const exportSrt = document.querySelector<HTMLButtonElement>("#export-srt");
 const exportJson = document.querySelector<HTMLButtonElement>("#export-json");
+const toggleBtn = document.querySelector<HTMLButtonElement>("#toggle-overlay");
 
 let capturing = false;
 let segmentCount = 0;
@@ -29,6 +30,7 @@ function setStatus(text: string): void {
 function renderState(): void {
   if (startBtn) startBtn.disabled = capturing;
   if (stopBtn) stopBtn.disabled = !capturing;
+  if (toggleBtn) toggleBtn.disabled = !capturing;
   if (clearBtn) clearBtn.disabled = segmentCount === 0;
   for (const btn of [exportTxt, exportSrt, exportJson]) {
     if (btn) btn.disabled = segmentCount === 0;
@@ -84,11 +86,15 @@ startBtn?.addEventListener("click", () => {
       return;
     }
 
+    const languageSelect = document.querySelector<HTMLSelectElement>("#language");
+    const language = (languageSelect?.value ?? "en") as "auto" | "bn" | "en" | "banglish";
+
     setStatus("Starting\u2026");
     const response = await chrome.runtime.sendMessage({
       type: "StartCapture",
       tabId: tab.id,
       platform,
+      language,
     } satisfies Message);
 
     const result = response as { type?: string; message?: string } | undefined;
@@ -124,6 +130,14 @@ clearBtn?.addEventListener("click", () => {
 exportTxt?.addEventListener("click", () => void exportAs("txt"));
 exportSrt?.addEventListener("click", () => void exportAs("srt"));
 exportJson?.addEventListener("click", () => void exportAs("json"));
+
+toggleBtn?.addEventListener("click", () => {
+  void (async () => {
+    const tab = await activeTab();
+    if (!tab?.id) return;
+    void chrome.runtime.sendMessage({ type: "ToggleOverlay", tabId: tab.id } satisfies Message);
+  })();
+});
 
 // Live updates from the pipeline. Model progress and transcript segments are
 // broadcast by the background worker; tab-scoped messages carry a `tabId`
@@ -197,6 +211,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     case "RequestTranscriptState":
     case "RequestTabIdentity":
     case "TabIdentity":
+    case "ToggleOverlay":
       break;
 
     default:

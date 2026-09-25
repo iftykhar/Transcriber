@@ -38,10 +38,10 @@ export const DEFAULT_VAD_OPTIONS: VadOptions = {
   frameSamples: 2048,
   // Deliberately low: meeting audio is often quiet and this gate is meant to
   // separate "someone is talking" from "room tone", not to judge loudness.
-  speechThreshold: 0.012,
+  speechThreshold: 0.005,
   startFrames: 2,
   endSilenceMs: 700,
-  minSegmentMs: 600,
+  minSegmentMs: 300,
   // Whisper's receptive window is 30s; stay well under it.
   maxSegmentMs: 12000,
   preRollFrames: 4,

@@ -81,7 +81,7 @@ function acquireStreamId(tabId: number): Promise<string> {
   });
 }
 
-async function startCapture(message: { tabId: number; platform: Platform }): Promise<Message> {
+async function startCapture(message: { tabId: number; platform: Platform; language: "auto" | "bn" | "en" | "banglish" }): Promise<Message> {
   try {
     const streamId = await acquireStreamId(message.tabId);
     await ensureOffscreen();
@@ -94,6 +94,7 @@ async function startCapture(message: { tabId: number; platform: Platform }): Pro
       streamId,
       tabId: message.tabId,
       platform: message.platform,
+      language: message.language,
     });
 
     return { type: "CaptureStarted", tabId: message.tabId };
@@ -119,7 +120,7 @@ async function handle(message: Message, sender: chrome.runtime.MessageSender): P
   switch (message.type) {
     // --- from the popup ------------------------------------------------
     case "StartCapture": {
-      const result = await startCapture({ tabId: message.tabId, platform: message.platform });
+      const result = await startCapture({ tabId: message.tabId, platform: message.platform, language: message.language });
       if (result.type === "CaptureStarted") {
         // Let the captured tab mount its overlay.
         relayToTab(message.tabId, { type: "CaptureStarted", tabId: message.tabId });
@@ -154,6 +155,10 @@ async function handle(message: Message, sender: chrome.runtime.MessageSender): P
     case "RequestTabIdentity":
       // `sender.tab` is only populated for messages from content scripts.
       return { type: "TabIdentity", tabId: sender.tab?.id ?? -1 };
+
+    case "ToggleOverlay":
+      if (message.tabId !== undefined) relayToTab(message.tabId, message);
+      return undefined;
 
     // --- from the offscreen document -----------------------------------
     case "CaptureStarted":

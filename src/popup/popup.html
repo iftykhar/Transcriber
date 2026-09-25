@@ -9,8 +9,15 @@
     <main id="app">
       <h1>BN/EN Live Transcriber</h1>
       <p id="status">Idle</p>
+      <select id="language" style="margin-bottom: 8px;">
+        <option value="auto">Auto-detect Language</option>
+        <option value="bn">Bangla</option>
+        <option value="banglish">Banglish</option>
+        <option value="en" selected>English</option>
+      </select>
       <button id="start" type="button">Start</button>
       <button id="stop" type="button" disabled>Stop</button>
+      <button id="toggle-overlay" type="button" disabled>Toggle window</button>
       <button id="clear" type="button">Clear transcript</button>
       <div id="export-controls">
         <button id="export-txt" type="button">Export .txt</button>
