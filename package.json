@@ -5,7 +5,7 @@
   "description": "Local, in-browser BN/EN live meeting transcriber (Chrome MV3 extension).",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.mjs",
+    "build": "node init && node scripts/build.mjs",
     "typecheck": "tsc --noEmit",
     "typecheck:worker": "tsc -p tsconfig.worker.json --noEmit",
     "typecheck:worklet": "tsc -p tsconfig.worklet.json --noEmit",
@@ -15,7 +15,9 @@
     "accuracy": "node scripts/accuracy.mjs"
   },
   "dependencies": {
-    "@xenova/transformers": "^2.17.2"
+    "@xenova/transformers": "^2.17.2",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.270",

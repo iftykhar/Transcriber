@@ -5,3 +5,4 @@ models/
 .DS_Store
 .live-test-profile/
 .accuracy-profile/
+config.bat

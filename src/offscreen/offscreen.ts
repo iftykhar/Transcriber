@@ -72,6 +72,7 @@ async function startCapture(message: {
   streamId: string;
   tabId: number;
   platform: Platform;
+  language: "auto" | "bn" | "en" | "banglish";
 }): Promise<void> {
   platform = message.platform;
 
@@ -85,7 +86,7 @@ async function startCapture(message: {
   const w = ensureWorker();
   // Tell the worker where the audio is coming from, then start pulling the
   // model down. The model is deliberately *not* loaded before this point.
-  w.postMessage({ type: "OffscreenStartCapture", streamId: message.streamId, tabId: message.tabId, platform } satisfies Message);
+  w.postMessage({ type: "OffscreenStartCapture", streamId: message.streamId, tabId: message.tabId, platform, language: message.language } satisfies Message);
   w.postMessage({ type: "LoadModel" } satisfies Message);
 
   capture = await startTabAudioCapture(message.streamId, {
@@ -163,6 +164,7 @@ chrome.runtime.onMessage.addListener((message: Message) => {
     case "TranscriptState":
     case "RequestTabIdentity":
     case "TabIdentity":
+    case "ToggleOverlay":
       break;
 
     default:

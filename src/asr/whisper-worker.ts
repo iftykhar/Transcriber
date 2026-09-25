@@ -28,6 +28,7 @@ function postProgress(progress: LoadProgress): void {
 
 /** Current capture context, set when the offscreen document starts a capture. */
 let platform: Platform = "unknown";
+let targetLanguage: "auto" | "bn" | "en" | "banglish" = "auto";
 
 // --- Ordered, bounded job queue -----------------------------------------
 
@@ -47,6 +48,7 @@ async function drain(): Promise<void> {
           platform,
           timestampMs: job.timestampMs,
           sourceChunkId: job.chunkId,
+          language: targetLanguage,
         });
         if (segment) {
           reply({ type: "TranscriptChunk", segment });
@@ -128,7 +130,10 @@ self.onmessage = (event: MessageEvent<Message>) => {
 
     case "StartCapture":
     case "OffscreenStartCapture":
-      if (message.type === "OffscreenStartCapture") platform = message.platform;
+      if (message.type === "OffscreenStartCapture") {
+        platform = message.platform;
+        targetLanguage = message.language;
+      }
       break;
 
     case "StopCapture":
@@ -149,6 +154,7 @@ self.onmessage = (event: MessageEvent<Message>) => {
     case "TranscriptState":
     case "RequestTabIdentity":
     case "TabIdentity":
+    case "ToggleOverlay":
       // Not this context's concern — ignored rather than erroring, so adding
       // a broadcast-style message elsewhere doesn't require every worker to
       // explicitly no-op it forever.
